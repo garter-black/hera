@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>HERA — Human-like AI voice reception</title>
+<meta name="description" content="HERA is a human-like AI voice receptionist for businesses. She answers every call, books and reschedules, qualifies and routes, and works 24/7 in your brand's voice. Every caller is told they're speaking with an AI. Built by Pitch Black Industries, Sydney."/>
+<meta name="theme-color" content="#040406"/>
+<meta property="og:title" content="HERA — Human-like AI voice reception"/>
+<meta property="og:description" content="The receptionist that never misses a call. Human-like AI voice reception for businesses — answers, books, routes, 24/7. B2B SaaS by Pitch Black Industries, Sydney."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://hera.garter.app"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+<style>
+  :root{--bg:#040406;--bg2:#070709;--panel:#0b0c10;--panel2:#101218;--ink:#f0ede6;--soft:#b3afa6;--mute:#76726a;
+    --gold:#c5a572;--goldb:#f0dca8;--line:rgba(197,165,114,.22);--lsoft:rgba(255,255,255,.06);
+    --serif:"Cormorant Garamond",Georgia,serif;--sans:"Inter",system-ui,sans-serif}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-weight:300;line-height:1.65;-webkit-font-smoothing:antialiased}
+  html,body{overflow-x:clip;max-width:100%}
+  .lenis.lenis-smooth{scroll-behavior:auto!important}
+  a{color:inherit;text-decoration:none}::selection{background:rgba(197,165,114,.3);color:#fff}
+  img,svg,canvas{max-width:100%}
+  h1,h2,h3{font-family:var(--serif);font-weight:300;line-height:1.02}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 40px}
+  .kick{font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);font-weight:500}
+  .lead{font-family:var(--serif);font-size:clamp(20px,2.4vw,30px);line-height:1.4;color:var(--soft);font-weight:300}
+  #sky{position:fixed;inset:0;z-index:0}
+  .veil{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(120% 70% at 50% -5%,rgba(197,165,114,.08),transparent 55%),linear-gradient(180deg,rgba(4,4,6,.05),rgba(4,4,6,.88))}
+  section{position:relative;z-index:2}
+  #loader{position:fixed;inset:0;z-index:200;background:#040406;display:flex;align-items:center;justify-content:center}
+  #loader .li{text-align:center;width:min(460px,82vw)}
+  #loader .ld-brand{font-size:11px;letter-spacing:.5em;text-transform:uppercase;color:var(--gold);opacity:.85}
+  #loader .ld-count{font-family:var(--serif);font-size:92px;line-height:1;margin:16px 0;font-weight:300}
+  #loader .ld-count .pct{font-size:28px;color:var(--mute);vertical-align:super}
+  #loader .ld-word{font-family:var(--serif);font-style:italic;font-size:18px;color:var(--soft);height:22px}
+  #loader .ld-bar{height:1px;background:rgba(255,255,255,.1);position:relative;overflow:hidden;margin-top:18px}
+  #loader .ld-bar i{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,var(--gold),var(--goldb))}
+  .curtain{position:fixed;left:0;right:0;z-index:199;background:#040406;height:50%;pointer-events:none}
+  .curtain.top{top:0}.curtain.bot{bottom:0}
+  #cur,#curDot{position:fixed;top:0;left:0;z-index:300;pointer-events:none;border-radius:50%;mix-blend-mode:difference;will-change:transform}
+  #cur{width:38px;height:38px;border:1px solid rgba(255,255,255,.6);margin:-19px 0 0 -19px;transition:width .25s,height .25s,margin .25s,background .25s}
+  #curDot{width:5px;height:5px;background:#fff;margin:-2.5px 0 0 -2.5px}
+  #cur.grow{width:80px;height:80px;margin:-40px 0 0 -40px;background:rgba(255,255,255,.12)}
+  body.cursor-on,body.cursor-on a,body.cursor-on button,body.cursor-on input{cursor:none}
+  @media (hover:none),(pointer:coarse){#cur,#curDot{display:none}}
+  .nav{position:fixed;top:0;left:0;right:0;z-index:40;backdrop-filter:blur(14px);background:rgba(4,4,6,.5);border-bottom:1px solid var(--lsoft);transition:transform .45s cubic-bezier(.6,0,.2,1)}
+  .nav.hide{transform:translateY(-100%)}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:66px}
+  .logo{display:flex;align-items:center;gap:11px}
+  .logo svg{width:18px;height:18px;color:var(--gold);animation:spin 20s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .logo .t{font-family:var(--serif);font-size:20px;letter-spacing:.14em}
+  .logo .e{font-size:9px;letter-spacing:.24em;color:var(--mute);text-transform:uppercase;margin-left:6px}
+  .navr{display:flex;align-items:center;gap:24px}
+  .navr a{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);transition:color .25s}
+  .navr a:hover{color:var(--goldb)}
+  .navcta{border:1px solid var(--line);color:var(--goldb)!important;padding:9px 16px;transition:all .25s}
+  .navcta:hover{background:var(--gold);color:#0a0a0a!important}
+  @media(max-width:860px){.navr a:not(.navcta){display:none}}
+  .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:120px 0 80px}
+  .hero .kick{margin-bottom:28px}
+  .hl{font-size:clamp(44px,8.6vw,128px);letter-spacing:-.01em;font-weight:300;max-width:15ch}
+  .hl .ln{display:block;overflow:hidden}
+  .hl .ln>span{display:inline-block;will-change:transform}
+  .hl .it{font-style:italic;color:var(--goldb)}
+  .hero .sub{margin-top:30px;max-width:580px;font-size:17px;color:var(--soft);font-weight:300}
+  .hero .btns{margin-top:40px;display:flex;gap:14px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:16px 30px;border:1px solid var(--gold);color:var(--goldb);font-size:11px;letter-spacing:.22em;text-transform:uppercase;cursor:pointer;background:none;transition:background .3s,color .3s;font-family:var(--sans);will-change:transform}
+  .btn:hover{background:var(--gold);color:#0a0a0a}
+  .btn.solid{background:var(--gold);color:#0a0a0a}.btn.solid:hover{background:var(--goldb)}
+  .scrollcue{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--mute);display:flex;flex-direction:column;align-items:center;gap:8px}
+  .scrollcue::after{content:"";width:1px;height:34px;background:linear-gradient(var(--gold),transparent);animation:cue 1.8s ease-in-out infinite}
+  @keyframes cue{0%,100%{opacity:.2;transform:scaleY(.5)}50%{opacity:1;transform:scaleY(1)}}
+  .block{padding:120px 0;border-top:1px solid var(--lsoft)}
+  .sec-head{margin-bottom:56px}
+  .sec-head .n{font-size:11px;letter-spacing:.3em;color:var(--mute);text-transform:uppercase}
+  .sec-head h2{font-size:clamp(30px,5vw,64px);margin-top:14px;max-width:18ch}
+  .manifesto{padding:140px 0;border-top:1px solid var(--lsoft)}
+  .manifesto p{font-family:var(--serif);font-size:clamp(28px,4.6vw,62px);line-height:1.18;font-weight:300;max-width:18ch}
+  .manifesto p .g{color:var(--goldb);font-style:italic}
+  .manifesto .word{display:inline-block}
+  .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--lsoft)}
+  .metric{padding:40px 28px;border-right:1px solid var(--lsoft)}
+  .metric:last-child{border-right:none}
+  .metric .v{font-family:var(--serif);font-size:clamp(40px,5vw,64px);color:var(--goldb);line-height:.9}
+  .metric .l{font-size:12px;color:var(--mute);margin-top:14px;letter-spacing:.02em}
+  @media(max-width:860px){.metrics{grid-template-columns:1fr 1fr}.metric{border-bottom:1px solid var(--lsoft)}}
+  .svc{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--lsoft);border:1px solid var(--lsoft);margin-top:10px}
+  .svc .s{background:var(--bg);padding:44px 38px;position:relative;overflow:hidden;transition:background .35s}
+  .svc .s::before{content:"";position:absolute;inset:0;background:radial-gradient(90% 70% at 0% 0%,rgba(197,165,114,.08),transparent 60%);opacity:0;transition:opacity .35s}
+  .svc .s:hover::before{opacity:1}
+  .svc .s .num{font-size:11px;letter-spacing:.2em;color:var(--gold);text-transform:uppercase}
+  .svc .s h3{font-size:30px;margin:14px 0 12px}
+  .svc .s p{color:var(--mute);font-size:14px;max-width:42ch}
+  .svc .s .tags{margin-top:18px;display:flex;flex-wrap:wrap;gap:8px}
+  .svc .s .tags span{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);border:1px solid var(--line);padding:5px 10px;border-radius:2px}
+  @media(max-width:760px){.svc{grid-template-columns:1fr}}
+  .proc{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+  .proc .p{border-top:2px solid var(--gold);padding-top:22px}
+  .proc .p .ph{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+  .proc .p h3{font-size:26px;margin:10px 0 10px}
+  .proc .p p{font-size:13px;color:var(--mute)}
+  .proc .p .wk{font-family:var(--serif);font-size:13px;color:var(--soft);margin-top:14px}
+  @media(max-width:860px){.proc{grid-template-columns:1fr 1fr}}
+  @media(max-width:520px){.proc{grid-template-columns:1fr}}
+  .diag{border:1px solid var(--line);background:linear-gradient(180deg,var(--panel),var(--bg));overflow:hidden;display:grid;grid-template-columns:1fr .9fr}
+  .diag .l{padding:48px 44px;border-right:1px solid var(--lsoft)}
+  .diag .l label{display:block;margin:26px 0 12px}
+  .diag .l .lt{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+  .diag .l .lt b{color:var(--goldb);font-weight:500;font-family:var(--serif);font-size:18px;letter-spacing:0;text-transform:none}
+  .diag input[type=range]{-webkit-appearance:none;width:100%;height:2px;background:var(--line);outline:none;margin-top:8px}
+  .diag input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--goldb);border:2px solid #1a1a1a;cursor:pointer;box-shadow:0 0 0 4px rgba(197,165,114,.15)}
+  .diag .r{padding:48px 44px;display:flex;flex-direction:column;justify-content:center;background:#070709}
+  .diag .r .rk{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
+  .diag .r .rv{font-family:var(--serif);font-size:clamp(48px,7vw,86px);color:var(--goldb);line-height:.92;margin:8px 0 4px}
+  .diag .r .rv.sm{font-size:34px;color:var(--ink)}
+  .diag .r .sep{height:1px;background:var(--lsoft);margin:26px 0}
+  .diag .r .note{font-size:11px;color:var(--mute);line-height:1.6;margin-top:18px}
+  @media(max-width:820px){.diag{grid-template-columns:1fr}.diag .l{border-right:none;border-bottom:1px solid var(--lsoft)}}
+  .thalia{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+  .thalia .pic{aspect-ratio:1;border:1px solid var(--line);background:radial-gradient(circle at 50% 40%,rgba(197,165,114,.16),transparent 60%),var(--panel);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+  .thalia .pic .ring{position:absolute;border:1px solid var(--line);border-radius:50%}
+  .thalia .pic .core{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,var(--goldb),var(--gold) 60%,transparent);filter:blur(2px);animation:pulse 3s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.12);opacity:1}}
+  .thalia h2{font-size:clamp(30px,4vw,52px)}
+  .thalia .it{font-style:italic;color:var(--goldb)}
+  .thalia p{color:var(--soft);margin-top:16px;max-width:46ch}
+  .thalia .feat{margin-top:22px;display:flex;flex-direction:column;gap:10px}
+  .thalia .feat div{font-size:13px;color:var(--mute);display:flex;gap:10px}
+  .thalia .feat div::before{content:"◆";color:var(--gold);font-size:9px;margin-top:5px}
+  @media(max-width:820px){.thalia{grid-template-columns:1fr}}
+  .trust{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:10px}
+  .tr{border:1px solid var(--lsoft);padding:32px 28px;background:var(--panel)}
+  .tr .tag{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+  .tr h3{font-size:21px;margin:12px 0 8px}
+  .tr p{font-size:13px;color:var(--mute)}
+  @media(max-width:860px){.trust{grid-template-columns:1fr}}
+  .cta{padding:150px 0;text-align:center;border-top:1px solid var(--lsoft)}
+  .cta h2{font-size:clamp(40px,8vw,110px);line-height:.98}
+  .cta .it{font-style:italic;color:var(--goldb)}
+  .cta p{color:var(--soft);margin:24px auto 0;max-width:48ch}
+  .cta .btns{margin-top:40px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  footer{position:relative;z-index:2;padding:60px 0 90px;background:var(--bg);border-top:1px solid var(--lsoft)}
+  footer .top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px;align-items:flex-end}
+  footer .big{font-family:var(--serif);font-size:clamp(28px,4vw,44px)}
+  footer .meta{font-size:12px;color:var(--mute);text-align:right;line-height:1.8}
+  footer .disc{margin-top:50px;font-size:11px;color:var(--mute);line-height:1.7;max-width:900px;border-top:1px solid var(--lsoft);padding-top:24px}
+  footer .c{margin-top:18px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
+  .rv2{will-change:transform,opacity}
+  @media (prefers-reduced-motion: reduce){*{animation-duration:.001s!important;transition-duration:.001s!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><symbol id="star" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l2.2 6.9H21l-5.5 4 2.1 6.9L12 15.8 6.4 19.8l2.1-6.9L3 8.9h6.8z"/></symbol></svg>
+
+<div id="loader"><div class="li">
+  <div class="ld-brand">HERA · Voice reception</div>
+  <div class="ld-count"><span id="ldNum">0</span><span class="pct">%</span></div>
+  <div class="ld-word" id="ldWord">answering the line</div>
+  <div class="ld-bar"><i id="ldBar"></i></div>
+</div></div>
+<div class="curtain top" id="curtTop"></div>
+<div class="curtain bot" id="curtBot"></div>
+<div id="cur"></div><div id="curDot"></div>
+
+<canvas id="sky"></canvas>
+<div class="veil"></div>
+
+<nav class="nav" id="nav"><div class="wrap">
+  <div class="logo"><svg><use href="#star"/></svg><span class="t">HERA</span><span class="e">Voice reception</span></div>
+  <div class="navr">
+    <a href="#what" data-scroll>What she does</a>
+    <a href="#process" data-scroll>How it works</a>
+    <a href="#roi" data-scroll>The cost of missed calls</a>
+    <a href="#trust" data-scroll>Trust</a>
+    <a href="/whitepaper/">Whitepaper</a>
+    <a href="#contact" data-scroll class="navcta">Book a demo</a>
+  </div>
+</div></nav>
+
+<section class="hero" id="top"><div class="wrap">
+  <div class="kick rv">Human-like AI voice reception · B2B · Sydney</div>
+  <h1 class="hl"><span class="ln"><span>The receptionist</span></span><span class="ln"><span>that never misses</span></span><span class="ln"><span class="it">a call.</span></span></h1>
+  <p class="sub rv">HERA answers every call in your brand's voice — books, reschedules, qualifies and routes, around the clock. She sounds human, and she tells every caller she's an AI. Live in days.</p>
+  <div class="btns rv"><a class="btn solid mag" href="#contact" data-scroll>Book a demo</a><a class="btn mag" href="#roi" data-scroll>What are missed calls costing you?</a></div>
+</div><div class="scrollcue">scroll</div></section>
+
+<section class="manifesto"><div class="wrap">
+  <p class="rv2" id="mani">Every missed call is a customer who called your competitor next. Voicemail doesn't book. HERA <span class="g">picks up, every time.</span></p>
+</div></section>
+
+<section class="block" id="proof"><div class="wrap">
+  <div class="sec-head"><div class="n rv">01 — Why it matters</div><h2 class="rv">A front desk that never sleeps, never queues, never forgets.</h2></div>
+  <div class="metrics">
+    <div class="metric rv"><div class="v">24/7</div><div class="l">answers day, night, weekends and holidays</div></div>
+    <div class="metric rv"><div class="v"><span class="cu" data-to="1" data-pre="&lt;" data-suf="s">0</span></div><div class="l">to answer — no hold music, no queue (target)</div></div>
+    <div class="metric rv"><div class="v"><span class="cu" data-to="0">0</span></div><div class="l">calls sent to voicemail</div></div>
+    <div class="metric rv"><div class="v"><span class="cu" data-to="3" data-suf=" days">0</span></div><div class="l">typical time to go live</div></div>
+  </div>
+  <p class="rv" style="font-size:11px;color:var(--mute);margin-top:16px">Capability and typical-target figures, not guaranteed outcomes. Response time depends on your telephony and call complexity.</p>
+</div></section>
+
+<section class="block" id="what"><div class="wrap">
+  <div class="sec-head"><div class="n rv">02 — What she does</div><h2 class="rv">One agent, the whole front desk.</h2></div>
+  <div class="svc">
+    <div class="s rv"><div class="num">Answer</div><h3>Greet &amp; handle</h3><p>Picks up on the first ring in your brand's voice, answers common questions from your own information, and holds a natural back-and-forth — not a phone tree.</p><div class="tags"><span>Natural speech</span><span>Your knowledge</span><span>Your brand voice</span><span>Multilingual</span></div></div>
+    <div class="s rv"><div class="num">Book</div><h3>Schedule &amp; confirm</h3><p>Books, reschedules and cancels straight into your calendar, sends confirmations, and follows up — so appointments actually show up.</p><div class="tags"><span>Calendar sync</span><span>Confirmations</span><span>Reminders</span></div></div>
+    <div class="s rv"><div class="num">Qualify</div><h3>Qualify &amp; route</h3><p>Asks the right questions, captures the details, logs every call to your CRM, and routes hot leads and urgent calls to the right person.</p><div class="tags"><span>Lead capture</span><span>CRM logging</span><span>Smart routing</span></div></div>
+    <div class="s rv"><div class="num">Escalate</div><h3>Know when to hand off</h3><p>Works from a tuned playbook and, when a call needs a human, transfers or takes a message with full context — nothing dropped.</p><div class="tags"><span>Live transfer</span><span>Message + context</span><span>Human-in-the-loop</span></div></div>
+  </div>
+</div></section>
+
+<section class="block" id="process"><div class="wrap">
+  <div class="sec-head"><div class="n rv">03 — How it works</div><h2 class="rv">Four steps. Live in days, not months.</h2></div>
+  <div class="proc">
+    <div class="p rv"><div class="ph">01 · Connect</div><h3>Point your number</h3><p>Forward your existing business line — or take a new one. No new hardware, no phone system to rip out.</p><div class="wk">~1 day</div></div>
+    <div class="p rv"><div class="ph">02 · Train</div><h3>Teach her your business</h3><p>She learns your services, hours, FAQs, booking rules and tone from your own material. You approve how she sounds.</p><div class="wk">~2–3 days</div></div>
+    <div class="p rv"><div class="ph">03 · Go live</div><h3>She starts answering</h3><p>HERA takes calls against real workflows, books into your calendar, and logs to your CRM from day one.</p><div class="wk">day one</div></div>
+    <div class="p rv"><div class="ph">04 · Improve</div><h3>Tune from real calls</h3><p>Review transcripts, refine the playbook, expand what she handles. She gets better every week.</p><div class="wk">ongoing</div></div>
+  </div>
+</div></section>
+
+<section class="block" id="roi"><div class="wrap">
+  <div class="sec-head"><div class="n rv">04 — The cost of missed calls</div><h2 class="rv">Move the sliders. See what unanswered calls cost you a year.</h2></div>
+  <div class="diag rv">
+    <div class="l">
+      <label><span class="lt">Calls you miss per week <b id="dCalls">25</b></span><input type="range" id="calls" min="1" max="300" value="25"></label>
+      <label><span class="lt">Share of callers who'd become customers <b id="dConv">30%</b></span><input type="range" id="conv" min="5" max="80" value="30"></label>
+      <label><span class="lt">Average value of a customer <b id="dVal">$450</b></span><input type="range" id="val" min="50" max="5000" step="50" value="450"></label>
+      <label><span class="lt">Share HERA would capture if she answered <b id="dCap">80%</b></span><input type="range" id="cap" min="30" max="100" value="80"></label>
+    </div>
+    <div class="r">
+      <div class="rk">Recoverable revenue · per year</div>
+      <div class="rv" id="dOut">$0</div>
+      <div class="rk" style="margin-top:6px">from roughly</div>
+      <div class="rv sm" id="dWon">0 answered calls / year</div>
+      <div class="sep"></div>
+      <div class="rk">The maths</div>
+      <div class="note">Illustrative model from your inputs: missed calls/week × 52 × conversion rate × HERA capture share × average customer value. It's a rough estimate to size the opportunity — not a quote or a guarantee. Your real numbers come out of a short pilot.</div>
+    </div>
+  </div>
+</div></section>
+
+<section class="block" id="spotlight"><div class="wrap">
+  <div class="sec-head"><div class="n rv">05 — The voice</div><h2 class="rv">Real-time, natural, and unmistakably yours.</h2></div>
+  <div class="thalia">
+    <div class="pic rv">
+      <div class="ring" style="width:78%;height:78%"></div>
+      <div class="ring" style="width:54%;height:54%"></div>
+      <div class="core"></div>
+    </div>
+    <div>
+      <div class="kick" style="margin-bottom:14px">Built by Pitch Black Industries</div>
+      <h2>Sounds human. <span class="it">Says she isn't.</span></h2>
+      <p>HERA runs on a real-time voice stack tuned for low latency, so conversations feel natural — she listens, waits her turn, and responds without the robotic lag. Each deployment is bespoke: your voice, your knowledge, your booking rules.</p>
+      <div class="feat">
+        <div>Sub-second, real-time speech — built to feel like a person, not a menu</div>
+        <div>Named and voiced for your brand; trained only on your business</div>
+        <div>Discloses she's an AI on every call — honest by default</div>
+        <div>Escalates cleanly to a human whenever a call needs one</div>
+      </div>
+      <div class="btns" style="margin-top:30px"><a class="btn solid mag" href="#contact" data-scroll>Book a demo</a><a class="btn mag" href="#trust" data-scroll>How we handle trust</a></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="block" id="trust"><div class="wrap">
+  <div class="sec-head"><div class="n rv">06 — Trust &amp; disclosure</div><h2 class="rv">Human-like, never deceptive.</h2></div>
+  <div class="trust">
+    <div class="tr rv"><div class="tag">Disclosure</div><h3>Callers always know</h3><p>Every caller is clearly told they're speaking with an AI assistant, not a person. It's built in, not optional — honest reception, by design.</p></div>
+    <div class="tr rv"><div class="tag">Human handoff</div><h3>A person is always reachable</h3><p>HERA transfers to a human, or takes a full-context message, whenever a caller asks or a call needs judgement. She augments your team; she doesn't hide them.</p></div>
+    <div class="tr rv"><div class="tag">Your data</div><h3>Your calls, your control</h3><p>Calls and transcripts belong to you, used to run and improve your own agent. Deployed for legitimate business reception only.</p></div>
+  </div>
+</div></section>
+
+<section class="cta" id="contact"><div class="wrap">
+  <div class="kick rv" style="margin-bottom:24px">07 — Start</div>
+  <h2 class="rv2" id="ctah">Stop missing <span class="it">calls.</span></h2>
+  <p class="rv">Book a short demo and hear HERA answer for a business like yours. If it's a fit, we can have your own agent live within days.</p>
+  <div class="btns rv"><a class="btn solid mag" href="/cdn-cgi/l/email-protection#82e7f8f0e3c2e5e3f0f6e7f0ace3f2f2bdf1f7e0e8e7e1f6bfcac7d0c3a7b0b2e6e7efeda7b0b2f0e7f3f7e7f1f6a4e0ede6fbbfcaeba7b0b2cac7d0c3a7b0b2f6e7e3efa7b0c1a7b0b2cba7b0b5e6a7b0b2eeebe9e7a7b0b2e3a7b0b2e6e7efeda7b0b2e4edf0a7b0b2effba7b0b2e0f7f1ebece7f1f1ac"><span class="__cf_email__" data-cfemail="07627d75664760667573627529667777">[email&#160;protected]</span></a></div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="top">
+    <div class="big">The line is<br><span style="color:var(--goldb);font-style:italic">always open.</span></div>
+    <div class="meta">HERA — Human-like AI voice reception<br>A product of Pitch Black Industries<br><span style="color:var(--gold)">Cognitive Intelligence Services Pty Ltd</span><br>ABN 42 689 181 208<br>Sydney, Australia<br><span style="color:var(--gold)">hera.garter.app</span> · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a8cdd2dac9e8cfc9dadccdda86c9d8d8">[email&#160;protected]</a><br><a href="/whitepaper/" style="color:var(--goldb)">Read the whitepaper &rarr;</a></div>
+  </div>
+  <div class="disc">HERA is a business voice-reception product operated by Cognitive Intelligence Services Pty Ltd (ABN 42 689 181 208), trading as Pitch Black Industries. HERA is an artificial-intelligence assistant; every caller is clearly informed they are speaking with an AI and not a human, and a human is always reachable. Figures on this page describe product capability and typical targets and are illustrative, not guaranteed outcomes; the missed-call calculator is a rough model based on the inputs you provide. Availability and response times depend on your telephony setup and integrations.</div>
+  <div class="c">© 2026 Cognitive Intelligence Services Pty Ltd · ABN 42 689 181 208 · hera.garter.app</div>
+</div></footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+const $=id=>document.getElementById(id);
+const money=n=>'$'+Math.round(n).toLocaleString('en-US');
+(function(){
+  const calls=$('calls'),conv=$('conv'),val=$('val'),cap=$('cap');
+  if(!calls)return;
+  function calc(){
+    const C=+calls.value,V=+conv.value/100,A=+val.value,K=+cap.value/100;
+    $('dCalls').textContent=C;$('dConv').textContent=(V*100).toFixed(0)+'%';$('dVal').textContent=money(A);$('dCap').textContent=(K*100).toFixed(0)+'%';
+    const answered=C*52*K;
+    const wonCustomers=answered*V;
+    const revenue=wonCustomers*A;
+    $('dOut').textContent=money(revenue);
+    $('dWon').textContent=Math.round(answered).toLocaleString('en-US')+' answered calls / year';
+  }
+  [calls,conv,val,cap].forEach(e=>e.addEventListener('input',calc));calc();
+})();
+
+(function(){
+  if(typeof THREE==='undefined')return;
+  const cv=$('sky');const sc=new THREE.Scene();sc.fog=new THREE.FogExp2(0x040406,.02);
+  const cam=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,.1,400);cam.position.z=26;
+  const r=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
+  function size(){r.setSize(innerWidth,innerHeight);r.setPixelRatio(Math.min(devicePixelRatio,2));cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();}
+  sc.add(new THREE.AmbientLight(0xffffff,.6));const key=new THREE.DirectionalLight(0xffe9c0,.85);key.position.set(6,9,8);sc.add(key);
+  const N=2600,pos=new Float32Array(N*3),scl=new Float32Array(N),pha=new Float32Array(N),col=new Float32Array(N*3);
+  const cG=new THREE.Color(0xf0dca8),cW=new THREE.Color(0xffffff),cB=new THREE.Color(0xbcd0ff);
+  for(let i=0;i<N;i++){const r1=18+Math.random()*150,th=Math.random()*6.283,ph=Math.acos(2*Math.random()-1);
+    pos[i*3]=r1*Math.sin(ph)*Math.cos(th);pos[i*3+1]=r1*Math.sin(ph)*Math.sin(th)*.6;pos[i*3+2]=r1*Math.cos(ph);
+    scl[i]=.4+Math.random()*2.2;pha[i]=Math.random()*6.283;
+    const c=Math.random(),cc=c<.7?cW:(c<.9?cG:cB);col[i*3]=cc.r;col[i*3+1]=cc.g;col[i*3+2]=cc.b;}
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setAttribute('aScale',new THREE.BufferAttribute(scl,1));
+  g.setAttribute('aPhase',new THREE.BufferAttribute(pha,1));g.setAttribute('aColor',new THREE.BufferAttribute(col,3));
+  const mat=new THREE.ShaderMaterial({uniforms:{uTime:{value:0},uSize:{value:26},uPR:{value:Math.min(devicePixelRatio,2)}},transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+    vertexShader:`uniform float uTime;uniform float uSize;uniform float uPR;attribute float aScale;attribute float aPhase;attribute vec3 aColor;varying float vTw;varying vec3 vCol;void main(){vec4 mv=modelViewMatrix*vec4(position,1.0);gl_Position=projectionMatrix*mv;vTw=.5+.5*sin(uTime*1.6+aPhase);vCol=aColor;gl_PointSize=aScale*uSize*uPR*(40.0/-mv.z);}`,
+    fragmentShader:`varying float vTw;varying vec3 vCol;void main(){vec2 c=gl_PointCoord-.5;float d=length(c);float a=smoothstep(.5,.0,d);a*=(.3+.7*vTw);gl_FragColor=vec4(vCol,a);}`});
+  const stars=new THREE.Points(g,mat);sc.add(stars);
+  const grp=new THREE.Group();sc.add(grp);
+  grp.add(new THREE.Mesh(new THREE.IcosahedronGeometry(6,1),new THREE.MeshStandardMaterial({color:0xc5a572,metalness:.7,roughness:.3,wireframe:true,transparent:true,opacity:.38})));
+  grp.add(new THREE.Mesh(new THREE.IcosahedronGeometry(2.5,0),new THREE.MeshStandardMaterial({color:0x0b0c10,emissive:0xc5a572,emissiveIntensity:.25,metalness:.9,roughness:.25,flatShading:true})));
+  size();addEventListener('resize',size);
+  let mx=0,my=0,tx=0,ty=0,sy=0;addEventListener('pointermove',e=>{mx=(e.clientX/innerWidth-.5);my=(e.clientY/innerHeight-.5);});
+  window.__setHeroScroll=v=>sy=v;const clock=new THREE.Clock();
+  (function loop(){requestAnimationFrame(loop);const t=clock.getElapsedTime();mat.uniforms.uTime.value=t;
+    grp.rotation.y+=.0022;grp.rotation.x=.15+my*.25+sy*.0004;stars.rotation.y=t*.012;stars.rotation.x=my*.06;
+    tx+=(mx*7-tx)*.04;ty+=(-my*5-ty)*.04;cam.position.x=tx;cam.position.y=ty;cam.position.z=26+sy*.004;cam.lookAt(0,0,0);
+    r.render(sc,cam);})();
+})();
+
+(function(){
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fine=matchMedia('(hover:hover) and (pointer:fine)').matches;
+  const hasGSAP=typeof window.gsap!=='undefined';
+  const hasST=hasGSAP&&typeof window.ScrollTrigger!=='undefined';
+  if(hasST)gsap.registerPlugin(ScrollTrigger);
+  let done=false,loaded=false,revealed=false;
+  const words=['answering the line','learning your business','booking the meeting','routing the lead'];
+  let wi=0;const wEl=$('ldWord');const wInt=setInterval(()=>{wi=(wi+1)%words.length;if(wEl)wEl.textContent=words[wi];},700);
+  const num=$('ldNum'),bar=$('ldBar'),startT=performance.now();
+  (function step(now){const k=Math.min((now-startT)/1800,1);const p=Math.floor((1-Math.pow(1-k,3))*100);if(num)num.textContent=p;if(bar)bar.style.width=p+'%';if(k<1)requestAnimationFrame(step);else{done=true;maybe();}})(startT);
+  addEventListener('load',()=>{loaded=true;maybe();});setTimeout(()=>{loaded=true;maybe();},3800);
+  function maybe(){
+    if(revealed||!done)return;revealed=true;clearInterval(wInt);
+    const ld=$('loader'),ct=$('curtTop'),cb=$('curtBot');
+    if(reduced||!hasGSAP){[ld,ct,cb].forEach(e=>e&&(e.style.display='none'));showAll();heroIn();return;}
+    gsap.timeline()
+      .to('#loader .li',{opacity:0,duration:.4,ease:'power2.in'})
+      .set('#loader',{display:'none'})
+      .to([ct,cb],{scaleY:0,transformOrigin:(i)=>i?'bottom':'top',duration:.9,ease:'power4.inOut'},.15)
+      .set([ct,cb],{display:'none'})
+      .add(heroIn,'-=.45');
+  }
+  function showAll(){document.querySelectorAll('.rv,.rv2').forEach(el=>{el.style.opacity=1;el.style.transform='none';});}
+  function heroIn(){
+    if(!hasGSAP||reduced){showAll();return;}
+    gsap.set('.hl .ln>span',{yPercent:115});gsap.set('.hero .rv',{opacity:0,y:24});
+    gsap.timeline().to('.hl .ln>span',{yPercent:0,duration:1,ease:'power4.out',stagger:.1})
+      .to('.hero .rv',{opacity:1,y:0,duration:.7,ease:'power3.out',stagger:.1},'-=.6');
+  }
+  let lenis=null;
+  if(typeof Lenis!=='undefined'&&!reduced){
+    lenis=new Lenis({lerp:.09});
+    lenis.on('scroll',e=>{const y=e.scroll||window.scrollY;if(window.__setHeroScroll)window.__setHeroScroll(y);if(hasST)ScrollTrigger.update();navToggle(y);});
+    if(hasGSAP){gsap.ticker.add(t=>lenis.raf(t*1000));gsap.ticker.lagSmoothing(0);}else{(function raf(t){lenis.raf(t);requestAnimationFrame(raf);})();}
+  } else addEventListener('scroll',()=>{const y=window.scrollY;if(window.__setHeroScroll)window.__setHeroScroll(y);navToggle(y);});
+  document.querySelectorAll('[data-scroll]').forEach(a=>a.addEventListener('click',e=>{const id=a.getAttribute('href');if(!id||id[0]!=='#')return;const el=document.querySelector(id);if(!el)return;e.preventDefault();if(lenis)lenis.scrollTo(el,{offset:-10});else el.scrollIntoView({behavior:'smooth'});}));
+  const nav=$('nav');let lastY=0;function navToggle(y){if(y>lastY&&y>240)nav.classList.add('hide');else nav.classList.remove('hide');lastY=y;}
+  if(hasST&&!reduced){
+    document.querySelectorAll('.rv').forEach(el=>{if(el.closest('.hero'))return;gsap.from(el,{opacity:0,y:34,duration:.85,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 88%'}});});
+    document.querySelectorAll('.rv2').forEach(node=>{
+      const html=node.innerHTML;
+      node.innerHTML=html.replace(/(<span[^>]*>.*?<\/span>|[^<>\s]+)(\s*)/g,(m,w,sp)=>w.startsWith('<span')?'<span class="word">'+w+'</span>'+sp:'<span class="word">'+w+'</span>'+sp);
+      gsap.from(node.querySelectorAll('.word'),{opacity:.12,y:'0.2em',duration:.6,ease:'power2.out',stagger:.04,scrollTrigger:{trigger:node,start:'top 80%'}});
+    });
+    document.querySelectorAll('.cu').forEach(el=>{const to=+el.dataset.to,pre=el.dataset.pre||'',suf=el.dataset.suf||'';ScrollTrigger.create({trigger:el,start:'top 90%',once:true,onEnter:()=>{const o={v:0};gsap.to(o,{v:to,duration:1.4,ease:'power2.out',onUpdate:()=>el.textContent=pre+Math.floor(o.v)+suf});}});});
+  }else{showAll();document.querySelectorAll('.cu').forEach(el=>el.textContent=(el.dataset.pre||'')+el.dataset.to+(el.dataset.suf||''));}
+  if(fine&&!reduced){
+    document.body.classList.add('cursor-on');
+    const cur=$('cur'),dot=$('curDot');let cx=innerWidth/2,cy=innerHeight/2,dx=cx,dy=cy;
+    addEventListener('pointermove',e=>{cx=e.clientX;cy=e.clientY;dot.style.transform=`translate(${cx}px,${cy}px)`;});
+    (function f(){dx+=(cx-dx)*.18;dy+=(cy-dy)*.18;cur.style.transform=`translate(${dx}px,${dy}px)`;requestAnimationFrame(f);})();
+    document.querySelectorAll('a,button,.tr,.svc .s,input').forEach(el=>{el.addEventListener('pointerenter',()=>cur.classList.add('grow'));el.addEventListener('pointerleave',()=>cur.classList.remove('grow'));});
+  }
+  if(fine&&!reduced)document.querySelectorAll('.mag').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBoundingClientRect();b.style.transform=`translate(${(e.clientX-(r.left+r.width/2))*.3}px,${(e.clientY-(r.top+r.height/2))*.45}px)`;});b.addEventListener('pointerleave',()=>b.style.transform='');});
+})();
+</script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"5a684df1c9e84c329310f549617f460c","r":1}' crossorigin="anonymous"></script>
+</body>
+</html>
