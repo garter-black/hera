@@ -28,9 +28,11 @@ Both routes were verified against fresh live fetches, not the working tree.
 
 Runner-up, rejected on criterion 4: `sites/hera-garter-live/index.html` (37,157 B). It is a
 superset by 7 visible text blocks, and every one of those extra blocks is a footer carrying
-2 `<a href>` links and 1 `mailto:` to theblackgarter.com.au plus a second entity (Seven Stars
+2 `<a href>` links and 1 `mailto:` to a forbidden house domain, plus a second entity (Seven Stars
 Properties Pty Ltd ABN 87 902 523 599) that the live origin does not carry. The superset rule
-says the superset wins UNLESS the extra content is itself a defect; here it is.
+says the superset wins UNLESS the extra content is itself a defect; here it is. The exact
+strings and their byte offsets are in the decision record, which is deliberately kept
+outside this repo so no tracked file carries the forbidden domain as a resolvable link.
 
 `hera.garter.app` is served by Worker `pbi-edge`, which is why the brand hostname is 608 B
 larger than the Pages origin. That layer is reproduced here.
