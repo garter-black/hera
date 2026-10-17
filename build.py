@@ -24,10 +24,18 @@ OUT = os.path.join(DIST, "index.html")
 
 # --- verbatim from pbi-edge worker.js ---
 PLAYER_TAG = '<script src="/_pbi/player.js" defer></script>'
-LAYOUT = ('<style>elevenlabs-convai{right:16px!important;bottom:24px!important}'
-          '@media(max-width:640px){elevenlabs-convai{right:10px!important;bottom:76px!important}</style>')
-CONVAI_STYLE = ('<style>elevenlabs-convai{position:fixed;right:16px;bottom:24px;z-index:2147482000}'
-                '@media(max-width:640px){elevenlabs-convai{bottom:76px;right:10px}</style>')
+LAYOUT = (
+    "<style>elevenlabs-convai{right:16px!important;bottom:24px!important}"
+    "@media(max-width:640px){elevenlabs-convai{right:10px!important;bottom:76px!important}}</style>"
+)
+CONVAI_STYLE = (
+    "<style>elevenlabs-convai{position:fixed;right:16px;bottom:24px;z-index:2147482000}"
+    "@media(max-width:640px){elevenlabs-convai{bottom:76px;right:10px}}</style>"
+)
+# NOTE: both constants above end in TWO closing braces - one closes elevenlabs-convai{,
+# one closes @media(...){. A single brace here silently costs 1 byte per style block and
+# was the exact cause of a 2-byte build error found by verify.py on 17 Oct 2026.
+# Never generate these through str.format(): brace-doubling will eat them.
 AGENT = ('agent_1901kzp4j332fg8a31tssz296c5n', '#d8c49a', '#0a0a0a')
 
 
